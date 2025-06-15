@@ -1,0 +1,26 @@
+server:
+  port: 8080
+
+spring:
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+  web:
+    cors:
+      allowed-origins: "http://localhost:5173"
+      allowed-methods: "*"
+      allowed-headers: "*"
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/bcbchat
+    username: postgres
+    password: root
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    # show-sql: true
+    properties:
+      hibernate:
+        format_sql: true

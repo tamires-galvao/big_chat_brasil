@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: bcb_pg
+    restart: always
+    environment:
+      POSTGRES_DB: bcbchat
+      POSTGRES_USER: bcbuser
+      POSTGRES_PASSWORD: bcbpass
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - bcb_net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bcbuser -d bcbchat"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+    container_name: bcb_backend
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/bcbchat
+      SPRING_DATASOURCE_USERNAME: bcbuser
+      SPRING_DATASOURCE_PASSWORD: bcbpass
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - bcb_net
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: bcb_frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - bcb_net
+
+networks:
+  bcb_net:
+    driver: bridge
+
+volumes:
+  pgdata:
