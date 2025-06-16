@@ -33,12 +33,16 @@ cd big-chat-brasil
 ```bash
 docker-compose up -d --build
 ```
-
 ### 3. Verifique se os containers estão em execução
 
 ```bash
 docker ps
 ```
+## 🌐 Acessos
+| Serviço                | URL                                                                                        |
+| ---------------------- | ------------------------------------------------------------------------------------------ |
+| **Frontend**           | [http://localhost:3000](http://localhost:3000/auth/sign-in)                                |
+| **Swagger (API Docs)** | [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html) |
 
 ---
 
