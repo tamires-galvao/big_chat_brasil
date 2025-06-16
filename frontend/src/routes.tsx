@@ -9,12 +9,12 @@ import { Chat } from "./pages/app/chat";
 
 export const router = createBrowserRouter([
   {
-    path: "/",
+    path: "/", // rotas protegidas
     element: <AppLayout />,
     errorElement: <Error />,
     children: [
       {
-        index: true, // redireciona '/' direto para conversations
+        index: true,
         element: <Conversations />,
       },
       {
@@ -30,7 +30,7 @@ export const router = createBrowserRouter([
     ],
   },
   {
-    path: "/",
+    path: "/auth", // rotas públicas de autenticação
     element: <AuthLayout />,
     children: [
       {
