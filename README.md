@@ -3,14 +3,14 @@
 **Big Chat Brasil** é uma aplicação web fullstack desenvolvida como parte do desafio técnico da BCB. A aplicação permite que empresas se comuniquem com seus clientes por meio de um sistema de chat com autenticação, histórico de mensagens, controle financeiro por plano e envio com priorização.
 
 O projeto é composto por:
-- 🖥️ **Backend** em Java com Spring Boot
-- 🌐 **Frontend** em React + Vite + Tailwind
-- 🐘 **Banco de dados** PostgreSQL
-- 🐳 Orquestração com Docker e Docker Compose
+-  **Backend** em Java com Spring Boot
+-  **Frontend** em React + Vite + Tailwind
+-  **Banco de dados** PostgreSQL
+-  Orquestração com Docker e Docker Compose
 
 ---
 
-## ⚙️ Pré-requisitos
+##  Pré-requisitos
 
 Certifique-se de ter as seguintes ferramentas instaladas:
 
@@ -67,6 +67,8 @@ docker ps
 | ---------------------- | ------------------------------------------------------------------------------------------ |
 | **Frontend**           | [http://localhost:3000](http://localhost:3000/auth/sign-in)                                |
 | **Swagger (API Docs)** | [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html) |
+## Cliente (CPF) 
+- 12345678901
 
 ---
 
