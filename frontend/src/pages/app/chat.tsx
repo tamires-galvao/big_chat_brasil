@@ -37,6 +37,27 @@ export function Chat() {
   const sentMessageIds = useRef<Set<string>>(new Set());
 
   const {
+    data: conversation,
+    isError: isConversationError,
+    isFetching: isConversationFetching,
+  } = useQuery<ConversationResponse>({
+    queryKey: ["conversation", id],
+    queryFn: async () => {
+      const response = await api.get(`/conversations/${id}`);
+      return response.data;
+    },
+    enabled: !!id,
+    retry: false,
+  });
+
+  // Redireciona rapidamente se conversa não existe
+  useEffect(() => {
+    if (!isConversationFetching && isConversationError) {
+      navigate("/conversations", { replace: true });
+    }
+  }, [isConversationError, isConversationFetching, navigate]);
+
+  const {
     data: messages,
     isLoading,
     isError,
@@ -46,16 +67,7 @@ export function Chat() {
       const response = await api.get(`/conversations/${id}/messages`);
       return response.data;
     },
-    enabled: !!id,
-  });
-
-  const { data: conversation } = useQuery<ConversationResponse>({
-    queryKey: ["conversation", id],
-    queryFn: async () => {
-      const response = await api.get(`/conversations/${id}`);
-      return response.data;
-    },
-    enabled: !!id,
+    enabled: !!id && !!conversation, // só busca mensagens se conversa existir
   });
 
   const { mutateAsync: sendMessage } = useMutation({
@@ -68,15 +80,10 @@ export function Chat() {
       return response.data;
     },
     onSuccess: (newMessage: Message) => {
-      console.log("Mutation added message:", newMessage.id, newMessage.content);
       sentMessageIds.current.add(newMessage.id);
       queryClient.setQueryData<Message[]>(["messages", id], (old = []) => {
         const messageExists = old.some((m) => m.id === newMessage.id);
-        if (messageExists) {
-          console.log("Duplicate message skipped in mutation:", newMessage.id);
-          return old;
-        }
-        return [...old, newMessage];
+        return messageExists ? old : [...old, newMessage];
       });
     },
   });
@@ -102,21 +109,17 @@ export function Chat() {
       ...raw,
       conversationId: id!,
     };
-    console.log("WebSocket received message:", parsed.id, parsed.content);
+
     if (
       sentMessageIds.current.has(parsed.id) ||
       parsed.senderType === "client"
     ) {
-      console.log("Skipping processed or client message:", parsed.id);
       return;
     }
+
     queryClient.setQueryData<Message[]>(["messages", id], (old = []) => {
       const messageExists = old.some((m) => m.id === parsed.id);
-      if (messageExists) {
-        console.log("Duplicate message skipped in WebSocket:", parsed.id);
-        return old;
-      }
-      return [...old, parsed];
+      return messageExists ? old : [...old, parsed];
     });
   });
 
@@ -131,8 +134,6 @@ export function Chat() {
 
   return (
     <div className="flex flex-col flex-1 bg-muted/20 min-h-0">
-      {/* <div className="flex flex-col h-[100dvh] bg-muted/20"> */}
-      {/* Header */}
       <div className="sticky top-0 p-3 border-b flex items-center gap-3 bg-background z-10">
         <button
           onClick={() => navigate("/conversations")}
@@ -146,7 +147,6 @@ export function Chat() {
         </span>
       </div>
 
-      {/* Messages */}
       <div
         ref={scrollRef}
         className="flex-1 overflow-y-auto p-4 space-y-3 min-h-0 scrollbar-custom"
@@ -184,7 +184,6 @@ export function Chat() {
         ))}
       </div>
 
-      {/* Input */}
       <form
         onSubmit={(e) => {
           e.preventDefault();
