@@ -1,8 +1,6 @@
 package com.bcbchat.core.service;
 
-import com.bcbchat.core.domain.Conversation;
 import com.bcbchat.core.domain.Message;
-import com.bcbchat.core.domain.Sender;
 import com.bcbchat.core.repository.ConversationRepository;
 import com.bcbchat.core.repository.MessageRepository;
 import org.springframework.stereotype.Service;

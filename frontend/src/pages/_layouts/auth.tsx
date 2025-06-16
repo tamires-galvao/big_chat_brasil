@@ -14,7 +14,6 @@ export function AuthLayout() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // 📱 Mobile layout
   if (!isDesktop) {
     return (
       <div className="min-h-screen flex items-center justify-center px-4">
@@ -25,7 +24,6 @@ export function AuthLayout() {
     );
   }
 
-  // 💻 Desktop layout com sidebar
   return (
     <div className="grid min-h-screen grid-cols-2 antialiased">
       <div className="flex h-full flex-col justify-between border-r border-foreground/5 bg-muted p-10 text-muted-foreground">

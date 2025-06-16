@@ -37,14 +37,6 @@ export default function ConversationsPage() {
     Conversation[]
   >([]);
 
-  // const { data, isLoading, isError } = useQuery<Conversation[]>({
-  //   queryKey: ["conversations"],
-  //   queryFn: async () => {
-  //     const response = await api.get("/conversations");
-  //     return response.data;
-  //   },
-  // });
-
   const [search, setSearch] = useState("");
 
   useEffect(() => {
@@ -130,7 +122,6 @@ export default function ConversationsPage() {
         <main
           className={cn(
             "flex flex-col h-full overflow-y-auto",
-            // "flex-1 h-full overflow-hidden",z
             isMobile && !selectedConversationId && "hidden"
           )}
         >

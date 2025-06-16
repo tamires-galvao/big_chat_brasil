@@ -1,4 +1,3 @@
-// routes.tsx
 import { createBrowserRouter } from "react-router-dom";
 import { AppLayout } from "./pages/_layouts/app";
 import { AuthLayout } from "./pages/_layouts/auth";
@@ -9,7 +8,7 @@ import { Chat } from "./pages/app/chat";
 
 export const router = createBrowserRouter([
   {
-    path: "/", // rotas protegidas
+    path: "/",
     element: <AppLayout />,
     errorElement: <Error />,
     children: [

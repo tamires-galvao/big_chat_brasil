@@ -2,7 +2,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/axios";
 import { useEffect, useRef, useState } from "react";
-import { ArrowLeft, Send } from "lucide-react";
+import { ArrowLeft, Check, CheckCheck, Clock, Send } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { cn } from "@/lib/utils";
@@ -50,7 +50,6 @@ export function Chat() {
     retry: false,
   });
 
-  // Redireciona rapidamente se conversa não existe
   useEffect(() => {
     if (!isConversationFetching && isConversationError) {
       navigate("/conversations", { replace: true });
@@ -67,7 +66,7 @@ export function Chat() {
       const response = await api.get(`/conversations/${id}/messages`);
       return response.data;
     },
-    enabled: !!id && !!conversation, // só busca mensagens se conversa existir
+    enabled: !!id && !!conversation,
   });
 
   const { mutateAsync: sendMessage } = useMutation({
@@ -175,11 +174,28 @@ export function Chat() {
             )}
           >
             <p>{msg.content}</p>
-            <span className="text-[10px] opacity-70 block mt-1 text-right">
-              {format(new Date(Number(msg.timestamp)), "HH:mm", {
-                locale: ptBR,
-              })}
-            </span>
+
+            <div className="mt-1 flex justify-between items-end text-[10px] opacity-70">
+              <span>
+                {format(new Date(Number(msg.timestamp)), "HH:mm", {
+                  locale: ptBR,
+                })}
+              </span>
+
+              {msg.senderType === "client" && (
+                <span className="ml-1 text-xs text-muted-foreground flex items-center gap-1">
+                  {msg.status === "queued" && (
+                    <Clock className="w-3 h-3 text-black/70" />
+                  )}
+                  {msg.status === "sent" && (
+                    <Check className="w-3 h-3 text-black/70" />
+                  )}
+                  {msg.status === "read" && (
+                    <CheckCheck className="w-3 h-3 text-primary" />
+                  )}
+                </span>
+              )}
+            </div>
           </div>
         ))}
       </div>

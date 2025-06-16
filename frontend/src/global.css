@@ -94,7 +94,6 @@
   .message-bubble.received {
     @apply bg-muted text-foreground;
   }
-  /* Tail for sent messages */
   .message-bubble.sent::after {
     content: "";
     @apply absolute bottom-0 right-[-6px];
@@ -102,7 +101,6 @@
     border-bottom-color: hsl(var(--primary));
     border-left-color: hsl(var(--primary));
   }
-  /* Tail for received messages */
   .message-bubble.received::after {
     content: "";
     @apply absolute bottom-0 left-[-6px];
@@ -112,16 +110,6 @@
   }
 }
 
-@media (max-width: 768px) {
-  .h-adjusted-mobile {
-    height: 85vh; /* ou ajuste conforme o tamanho real do header + voltar */
-  }
-}
-@media (min-width: 769px) {
-  .h-adjusted-mobile {
-    height: 90vh;
-  }
-}
 @layer components {
   .scrollbar-custom {
     scrollbar-width: thin;
