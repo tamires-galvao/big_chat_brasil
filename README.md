@@ -17,6 +17,30 @@ Certifique-se de ter as seguintes ferramentas instaladas:
 - [Docker](https://www.docker.com/get-started)
 - [Docker Compose](https://docs.docker.com/compose/install/)
 
+--- 
+
+### 🛠️ Configuração de Variáveis de Ambiente
+
+O projeto React utiliza variáveis de ambiente definidas no arquivo `.env.local`.
+
+Você encontrará um arquivo chamado:
+
+```
+.env.local.exemple
+```
+
+#### O que fazer:
+
+1. **Renomeie** o arquivo:
+
+   ```bash
+   mv .env.local.example .env.local
+   ```
+2. **Ajuste os valores**, se necessário:
+
+   * `VITE_API_URL=http://localhost:8080` → define a URL base da API
+
+>  **Importante:** O arquivo `.env.local` nunca deve ser versionado no Git, pois pode conter configurações específicas do ambiente local.
 ---
 
 ## 🚀 Como Executar o Projeto
