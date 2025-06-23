@@ -13,14 +13,27 @@ export interface AuthResponse {
     documentId: string;
     documentType: "CPF" | "CNPJ";
     balance?: number;
-    limit?: number;
+    creditLimit?: number;
+    monthlyUsed?: number;
     planType: "prepaid" | "postpaid";
     active: boolean;
   };
 }
 
+function normalizeDocument(doc: string): string {
+  return doc.replace(/[^\d]/g, "");
+}
+
 export async function signIn(data: AuthRequest) {
-  const response = await api.post<AuthResponse>("/authenticate", data);
-  localStorage.setItem("clientDocumentId", response.data.client.documentId);
+  const cleanedDoc = normalizeDocument(data.documentId);
+  const documentType = data.documentType.toUpperCase() as "CPF" | "CNPJ";
+
+  const response = await api.post<AuthResponse>("/authenticate", {
+    documentId: cleanedDoc,
+    documentType,
+  });
+
+  localStorage.setItem("clientDocumentId", cleanedDoc);
+  console.log("Client document ID stored in localStorage:", cleanedDoc);
   return response.data;
 }

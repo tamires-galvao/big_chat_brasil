@@ -31,4 +31,6 @@ public class Client {
 
     private boolean active;
 
+    private BigDecimal monthlyUsed = BigDecimal.ZERO;
+
 }

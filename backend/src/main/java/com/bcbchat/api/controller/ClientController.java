@@ -4,6 +4,7 @@ import com.bcbchat.core.domain.Client;
 import com.bcbchat.core.repository.ClientRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,6 +15,11 @@ import java.util.List;
 public class ClientController {
 
     private final ClientRepository clientRepository;
+
+    @GetMapping("/me")
+    public ResponseEntity<Client> getAuthenticatedClient(@AuthenticationPrincipal Client client) {
+        return ResponseEntity.ok(client);
+    }
 
     @GetMapping("/me/{documentId}")
     public ResponseEntity<Client> getCurrentClient(@PathVariable String documentId) {

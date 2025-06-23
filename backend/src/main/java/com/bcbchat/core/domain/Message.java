@@ -4,6 +4,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.*;
 
+import java.math.BigDecimal;
+
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -29,6 +31,6 @@ public class Message {
 
     private String status;   // "queued" | "sent" | "read"
 
-    private int cost;
+    private BigDecimal cost;
 
 }

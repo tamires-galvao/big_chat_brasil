@@ -1,5 +1,5 @@
 import { api } from "@/lib/axios";
-import { Message } from "@/pages/app/chat";
+import { Message } from "@/pages/app/chat/chat";
 
 export interface ConversationResponse {
   id: string;

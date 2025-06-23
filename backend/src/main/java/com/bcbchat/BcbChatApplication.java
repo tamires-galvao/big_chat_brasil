@@ -38,6 +38,7 @@ public class BcbChatApplication implements CommandLineRunner {
                 .active(true)
                 .planType("postpaid")
                 .creditLimit(BigDecimal.valueOf(100))
+                .monthlyUsed(BigDecimal.ZERO)
                 .build();
 
         clientRepository.save(client1);
@@ -70,7 +71,7 @@ public class BcbChatApplication implements CommandLineRunner {
                 .timestamp(String.valueOf(System.currentTimeMillis()))
                 .priority("normal")
                 .status("sent")
-                .cost(0)
+                .cost(BigDecimal.ZERO)
                 .conversationId(conversation1.getId())
                 .build();
 
@@ -82,7 +83,7 @@ public class BcbChatApplication implements CommandLineRunner {
                 .timestamp(String.valueOf(System.currentTimeMillis()))
                 .priority("normal")
                 .status("read")
-                .cost(0)
+                .cost(BigDecimal.ZERO)
                 .conversationId(conversation1.getId())
                 .build();
 
@@ -96,7 +97,7 @@ public class BcbChatApplication implements CommandLineRunner {
                 .timestamp(String.valueOf(System.currentTimeMillis()))
                 .priority("normal")
                 .status("queued")
-                .cost(0)
+                .cost(BigDecimal.ZERO)
                 .conversationId(conversation2.getId())
                 .build();
 
@@ -108,7 +109,7 @@ public class BcbChatApplication implements CommandLineRunner {
                 .timestamp(String.valueOf(System.currentTimeMillis()))
                 .priority("normal")
                 .status("sent")
-                .cost(0)
+                .cost(BigDecimal.ZERO)
                 .conversationId(conversation2.getId())
                 .build();
 

@@ -5,6 +5,7 @@ import { useNavigate, useParams, Outlet } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import { getConversations } from "@/api/conversations";
+import { MessageCircleMore } from "lucide-react";
 
 interface Conversation {
   id: string;
@@ -128,10 +129,19 @@ export default function ConversationsPage() {
           {selectedConversationId ? (
             <Outlet />
           ) : (
-            <div className="flex h-full items-center justify-center text-muted-foreground p-4 bg-muted/20">
-              <span className="text-center text-sm">
-                Selecione uma conversa para começar
-              </span>
+            <div className="flex flex-col items-center justify-center h-full text-muted-foreground p-4 bg-muted/20">
+              <div className="w-24 h-24 rounded-full bg-muted flex items-center justify-center mb-4">
+                <MessageCircleMore className="h-12 w-12 text-muted-foreground" />
+              </div>
+              <div className="text-center">
+                <h3 className="text-lg font-medium mb-2">
+                  Selecione uma conversa
+                </h3>
+                <p className="text-sm">
+                  Escolha uma conversa existente ou inicie uma nova para começar
+                  a conversar
+                </p>
+              </div>
             </div>
           )}
         </main>

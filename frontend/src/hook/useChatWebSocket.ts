@@ -1,4 +1,4 @@
-import { Message } from "@/pages/app/chat";
+import { Message } from "@/pages/app/chat/chat";
 import { useEffect } from "react";
 import SockJS from "sockjs-client";
 import { Client, over, Message as StompMessage } from "stompjs";

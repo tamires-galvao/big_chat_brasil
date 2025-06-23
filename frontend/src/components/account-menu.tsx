@@ -1,8 +1,8 @@
-import { useMutation } from "@tanstack/react-query";
-import { ChevronDown, LogOut } from "lucide-react";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { ChevronDown, LogOut, User, Wallet } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-import { getProfile, GetProfileResponse } from "@/api/get-profile";
+import { getProfile } from "@/api/get-profile";
 import { signOut } from "@/api/sign-out";
 
 import { Button } from "./ui/button";
@@ -16,33 +16,23 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { Skeleton } from "./ui/skeleton";
-import { useEffect, useState } from "react";
+import { formatDocument } from "@/utils/formatters";
+import { getClientBalanceInfo } from "@/utils/client";
+import { Client } from "@/types";
 
 export function AccountMenu() {
   const navigate = useNavigate();
-  const [profile, setProfile] = useState<GetProfileResponse | null>(null);
-  const [isLoadingProfile, setIsLoadingProfile] = useState(true);
+  const documentId = localStorage.getItem("clientDocumentId");
 
-  useEffect(() => {
-    const documentId = localStorage.getItem("clientDocumentId");
-
-    if (!documentId) {
-      return;
-    }
-
-    const fetchProfile = async () => {
-      try {
-        const result = await getProfile(documentId);
-        setProfile(result);
-      } catch (err) {
-        console.error("Erro ao carregar perfil:", err);
-      } finally {
-        setIsLoadingProfile(false);
-      }
-    };
-
-    fetchProfile();
-  }, []);
+  const {
+    data: profile,
+    isLoading: isLoadingProfile,
+    isFetching,
+  } = useQuery<Client>({
+    queryKey: ["client-profile", documentId],
+    queryFn: () => getProfile(documentId!),
+    enabled: !!documentId,
+  });
 
   const { mutateAsync: signOutFn, isPending: isSigningOut } = useMutation({
     mutationFn: signOut,
@@ -52,8 +42,24 @@ export function AccountMenu() {
     },
   });
 
+  const balanceInfo = profile ? getClientBalanceInfo(profile) : null;
+
   return (
     <Dialog>
+      <Button variant="outline" className="flex select-none items-center gap-2">
+        <Wallet className="h-4 w-4 flex-shrink-0" />
+        <div className="text-right">
+          {isLoadingProfile || isFetching ? (
+            <Skeleton className="h-4 w-20" />
+          ) : balanceInfo ? (
+            <p className={`text-sm font-semibold ${balanceInfo.color}`}>
+              {balanceInfo.label}: {balanceInfo.value}
+            </p>
+          ) : (
+            <p className="text-sm font-semibold">Carregando...</p>
+          )}
+        </div>
+      </Button>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
@@ -61,23 +67,26 @@ export function AccountMenu() {
             className="flex select-none items-center gap-2"
           >
             <ChevronDown className="h-4 w-4" />
-            {isLoadingProfile ? (
+            {isLoadingProfile || isFetching ? (
               <Skeleton className="h-4 w-24" />
             ) : (
-              <span>{profile?.name}</span>
+              <User className="h-4 w-4 flex-shrink-0" />
             )}
           </Button>
         </DropdownMenuTrigger>
 
         <DropdownMenuContent align="end" className="w-56">
           <DropdownMenuLabel className="flex flex-col space-y-0.5">
-            {isLoadingProfile ? (
+            {isLoadingProfile || isFetching ? (
               <div className="space-y-1.5">
                 <Skeleton className="h-4 w-32" />
                 <Skeleton className="h-3 w-24" />
               </div>
             ) : (
               <>
+                <span className="text-xs text-muted-foreground">
+                  {profile?.name}
+                </span>
                 <span className="text-xs text-muted-foreground">
                   {profile?.documentType}:{" "}
                   {formatDocument(profile?.documentType, profile?.documentId)}
@@ -87,11 +96,11 @@ export function AccountMenu() {
                   {profile?.planType === "prepaid" ? "Pré-pago" : "Pós-pago"}
                 </span>
                 <span className="text-xs text-muted-foreground">
-                  {profile?.planType === "prepaid"
-                    ? `Saldo: R$ ${profile?.balance?.toFixed(2) ?? "0,00"}`
-                    : `Limite: R$ ${
-                        profile?.creditLimit?.toFixed(2) ?? "0,00"
-                      }`}
+                  {balanceInfo && (
+                    <span className={`text-xs ${balanceInfo.color}`}>
+                      {balanceInfo.label}: {balanceInfo.value}
+                    </span>
+                  )}
                 </span>
               </>
             )}
@@ -112,24 +121,4 @@ export function AccountMenu() {
       </DropdownMenu>
     </Dialog>
   );
-}
-
-function formatDocument(
-  type: string | undefined,
-  value: string | undefined
-): string {
-  if (!type || !value) return "";
-
-  if (type === "CPF") {
-    return value.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, "$1.$2.$3-$4");
-  }
-
-  if (type === "CNPJ") {
-    return value.replace(
-      /^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/,
-      "$1.$2.$3/$4-$5"
-    );
-  }
-
-  return value;
 }

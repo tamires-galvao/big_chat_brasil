@@ -2,9 +2,9 @@ import { createBrowserRouter } from "react-router-dom";
 import { AppLayout } from "./pages/_layouts/app";
 import { AuthLayout } from "./pages/_layouts/auth";
 import { SignIn } from "./pages/auth/sign-in";
-import Conversations from "./pages/app/conversations";
+import Conversations from "./pages/app/conversations/conversations";
 import { Error } from "./pages/error";
-import { Chat } from "./pages/app/chat";
+import { Chat } from "./pages/app/chat/chat";
 
 export const router = createBrowserRouter([
   {

@@ -1,21 +1,20 @@
 import { api } from "@/lib/axios";
+import type { Client } from "@/types";
 
-export interface GetProfileResponse {
-  id: string;
-  name: string;
-  documentId: string;
-  documentType: "CPF" | "CNPJ";
-  balance?: number;
-  creditLimit?: number;
-  planType: "prepaid" | "postpaid";
-  active: boolean;
-}
+export async function getProfile(documentId: string): Promise<Client> {
+  const response = await api.get<Partial<Client>>(`/clients/me/${documentId}`);
+  const raw = response.data;
 
-export async function getProfile(
-  documentId: string
-): Promise<GetProfileResponse> {
-  const response = await api.get<GetProfileResponse>(
-    `/clients/me/${documentId}`
-  );
-  return response.data;
+  const client: Client = {
+    id: raw.id!,
+    name: raw.name!,
+    documentId: raw.documentId!,
+    documentType: raw.documentType!,
+    planType: raw.planType!,
+    active: raw.active ?? true,
+    balance: raw.balance ?? 0,
+    creditLimit: raw.creditLimit ?? 0,
+  };
+
+  return client;
 }
