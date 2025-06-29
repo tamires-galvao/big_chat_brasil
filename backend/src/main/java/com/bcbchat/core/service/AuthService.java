@@ -1,5 +1,6 @@
 package com.bcbchat.core.service;
 
+import com.bcbchat.config.JwtConstants;
 import com.bcbchat.core.domain.Client;
 import com.bcbchat.core.repository.ClientRepository;
 import io.jsonwebtoken.Jwts;
@@ -17,8 +18,10 @@ import java.util.Set;
 @Service
 public class AuthService {
 
-    private static final String SECRET_KEY = "bcbchat-secret-key-very-very-secure!";
-    private static final SecretKey SECRET_KEY_SPEC = new SecretKeySpec(SECRET_KEY.getBytes(), SignatureAlgorithm.HS256.getJcaName());
+    private static final SecretKey SECRET_KEY_SPEC = new SecretKeySpec(
+            JwtConstants.SECRET.getBytes(),
+            SignatureAlgorithm.HS256.getJcaName()
+    );
 
     private final Set<String> blacklistedTokens = new HashSet<>(); // Lista de bloqueio
 
@@ -35,7 +38,7 @@ public class AuthService {
             return client.get();
         }
 
-        throw new UsernameNotFoundException("Client inixistente");
+        throw new UsernameNotFoundException("Client inexistente");
     }
 
     public String generateToken(Client client) {

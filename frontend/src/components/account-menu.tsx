@@ -67,43 +67,22 @@ export function AccountMenu() {
             className="flex select-none items-center gap-2"
           >
             <ChevronDown className="h-4 w-4" />
-            {isLoadingProfile || isFetching ? (
-              <Skeleton className="h-4 w-24" />
-            ) : (
-              <User className="h-4 w-4 flex-shrink-0" />
-            )}
+            <User className="h-4 w-4 flex-shrink-0" />
           </Button>
         </DropdownMenuTrigger>
 
         <DropdownMenuContent align="end" className="w-56">
           <DropdownMenuLabel className="flex flex-col space-y-0.5">
-            {isLoadingProfile || isFetching ? (
-              <div className="space-y-1.5">
-                <Skeleton className="h-4 w-32" />
-                <Skeleton className="h-3 w-24" />
-              </div>
-            ) : (
-              <>
-                <span className="text-xs text-muted-foreground">
-                  {profile?.name}
-                </span>
-                <span className="text-xs text-muted-foreground">
-                  {profile?.documentType}:{" "}
-                  {formatDocument(profile?.documentType, profile?.documentId)}
-                </span>
-                <span className="text-xs text-muted-foreground">
-                  Plano:{" "}
-                  {profile?.planType === "prepaid" ? "Pré-pago" : "Pós-pago"}
-                </span>
-                <span className="text-xs text-muted-foreground">
-                  {balanceInfo && (
-                    <span className={`text-xs ${balanceInfo.color}`}>
-                      {balanceInfo.label}: {balanceInfo.value}
-                    </span>
-                  )}
-                </span>
-              </>
-            )}
+            <span className="text-xs text-muted-foreground">
+              {profile?.name}
+            </span>
+            <span className="text-xs text-muted-foreground">
+              {profile?.documentType}:{" "}
+              {formatDocument(profile?.documentType, profile?.documentId)}
+            </span>
+            <span className="text-xs text-muted-foreground">
+              Plano: {profile?.planType === "prepaid" ? "Pré-pago" : "Pós-pago"}
+            </span>
           </DropdownMenuLabel>
 
           <DropdownMenuSeparator />

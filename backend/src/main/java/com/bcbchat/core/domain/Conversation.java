@@ -15,6 +15,8 @@ public class Conversation {
     @Id
     private String id;
 
+    private String clientId;
+
     private String recipientId;
 
     private String recipientName;

@@ -2,6 +2,7 @@ import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Check, CheckCheck, Clock, AlertTriangle, XCircle } from "lucide-react";
 import type { Message, Client } from "@/types";
+import { Badge } from "@/components/ui/badge";
 
 interface MessageBubbleProps {
   message: Message;
@@ -66,12 +67,10 @@ export function MessageBubble({ message, clientProfile }: MessageBubbleProps) {
       <div className="max-w-xs lg:max-w-md">
         <div className={`px-4 py-3 rounded-2xl ${getBubbleStyles()}`}>
           {message.priority === "urgent" && isFromClient && (
-            <div className="flex items-center space-x-1 mb-2">
-              <AlertTriangle className="w-4 h-4 text-red-700" />
-              <span className="text-xs font-semibold text-red-800">
-                URGENTE
-              </span>
-            </div>
+            <Badge variant="destructive" className="mb-2 text-xs">
+              <AlertTriangle className="w-3 h-3 mr-1 inline" />
+              URGENTE
+            </Badge>
           )}
 
           <p className="text-sm leading-relaxed whitespace-pre-wrap break-words">

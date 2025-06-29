@@ -2,6 +2,7 @@ package com.bcbchat.config;
 
 import com.bcbchat.core.service.AuthService;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,11 +13,11 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
 import java.util.Collections;
 
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-    private static final String SECRET_KEY = "bcbchat-secret-key-very-secure";
     private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
     private final AuthService authService;
 
@@ -43,11 +44,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 }
 
                 String clientId = Jwts.parser()
-                        .setSigningKey(SECRET_KEY)
+                        .setSigningKey(new SecretKeySpec(
+                                JwtConstants.SECRET.getBytes(), SignatureAlgorithm.HS256.getJcaName()
+                        ))
                         .parseClaimsJws(token)
                         .getBody()
                         .getSubject();
                 logger.debug("Client ID: {}", clientId);
+
                 if (clientId != null) {
                     SecurityContextHolder.getContext().setAuthentication(
                             new UsernamePasswordAuthenticationToken(clientId, null, Collections.emptyList())

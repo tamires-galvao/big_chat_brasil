@@ -1,10 +1,12 @@
 package com.bcbchat.core.service;
 
 import com.bcbchat.core.domain.Client;
+import com.bcbchat.core.domain.Conversation;
 import com.bcbchat.core.domain.Message;
 import com.bcbchat.core.repository.ClientRepository;
 import com.bcbchat.core.repository.ConversationRepository;
 import com.bcbchat.core.repository.MessageRepository;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -45,18 +47,32 @@ public class MessageService {
     }
 
     public List<Message> getMessagesByConversationId(String conversationId) {
-        return messagesByConversation.getOrDefault(conversationId, new ArrayList<>());
+        String clientId = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Conversation conversation = conversationRepository.findById(conversationId)
+                .orElseThrow(() -> new RuntimeException("Conversa não encontrada"));
+        if (!conversation.getClientId().equals(clientId)) {
+            throw new RuntimeException("Acesso não autorizado à conversa");
+        }
+        return messageRepository.findByConversationId(conversationId);
     }
 
     public Message sendMessage(String conversationId, String content, String priority) {
-        Client client = clientRepository.findById("client-1")
+        String clientId = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Client client = clientRepository.findById(clientId)
                 .orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
+
+        // Verificar se a conversa pertence ao cliente
+        Conversation conversation = conversationRepository.findById(conversationId)
+                .orElseThrow(() -> new RuntimeException("Conversa não encontrada"));
+        if (!conversation.getClientId().equals(clientId)) {
+            throw new RuntimeException("Acesso não autorizado à conversa");
+        }
 
         BigDecimal costDecimal = "urgent".equals(priority)
                 ? BigDecimal.valueOf(0.50)
                 : BigDecimal.valueOf(0.25);
 
-        // VERIFICAÇÃO DE SALDO OU LIMITE
+        // Validação financeira
         if ("prepaid".equals(client.getPlanType())) {
             if (client.getBalance().compareTo(costDecimal) < 0) {
                 throw new RuntimeException("Saldo insuficiente.");
@@ -67,7 +83,7 @@ public class MessageService {
             }
         }
 
-        // DESCONTO
+        // Desconto
         if ("prepaid".equals(client.getPlanType())) {
             client.setBalance(client.getBalance().subtract(costDecimal));
         } else {
@@ -78,7 +94,7 @@ public class MessageService {
                 .id(UUID.randomUUID().toString())
                 .conversationId(conversationId)
                 .content(content)
-                .senderId(client.getId())
+                .senderId(clientId)
                 .senderType("client")
                 .timestamp(Instant.now().toString())
                 .priority(priority)

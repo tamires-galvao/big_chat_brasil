@@ -3,6 +3,7 @@ import { Message } from "@/pages/app/chat/chat";
 
 export interface ConversationResponse {
   id: string;
+  clientId: string;
   recipientId: string;
   recipientName: string;
   lastMessageContent: string;
@@ -16,11 +17,6 @@ export async function getConversations(): Promise<ConversationResponse[]> {
 }
 
 export async function getAllMessagesById(id: string): Promise<Message[]> {
-  console.log("Requisição para:", `/conversations/${id}/messages`);
-
-  const response = await api.get(
-    `http://localhost:8080/conversations/${id}/messages`
-  );
-  console.log("getAllMessagesById response:", response.data);
+  const response = await api.get<Message[]>(`/conversations/${id}/messages`);
   return response.data;
 }

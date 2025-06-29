@@ -10,6 +10,10 @@ import { getMessageCost, canClientSendMessage } from "@/utils/client";
 import { toast } from "sonner";
 import { MessageBubble } from "./message-bubble";
 import { Client } from "@/types";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 
 export interface Message {
   id: string;
@@ -100,6 +104,11 @@ export function Chat() {
       return;
     }
 
+    if (message.trim().length > 255) {
+      toast.error("Sua mensagem é muito longa. O limite é de 255 caracteres.");
+      return;
+    }
+
     const tempId = crypto.randomUUID();
     const now = new Date().toISOString();
 
@@ -172,13 +181,15 @@ export function Chat() {
   return (
     <div className="flex flex-col flex-1 bg-muted/20 min-h-0">
       <div className="sticky top-0 p-3 border-b flex items-center gap-3 bg-background z-10">
-        <button
+        <Button
+          variant="ghost"
+          size="icon"
           onClick={() => navigate("/conversations")}
           aria-label="Voltar para a lista de conversas"
-          className="p-2 hover:bg-muted rounded-full transition-colors md:hidden"
+          className="md:hidden"
         >
           <ArrowLeft className="h-5 w-5" />
-        </button>
+        </Button>
         <span className="font-semibold text-base truncate">
           {conversation?.recipientName}
         </span>
@@ -230,48 +241,50 @@ export function Chat() {
         }}
         className="sticky bottom-0 p-3 border-t bg-background z-10"
         style={{
-          paddingBottom: "calc(0.75rem + env(safe-area-inset-bottom, 0px))",
+          paddingBottom: "calc(2rem + env(safe-area-inset-bottom, 0px))",
         }}
         role="form"
       >
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
-          <label className="flex items-center space-x-2">
-            <input
-              type="checkbox"
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id="urgent"
               checked={isUrgent}
-              onChange={(e) => setIsUrgent(e.target.checked)}
-              className="w-4 h-4 text-red-600 bg-white border-neutral-300 rounded focus:ring-red-500 focus:ring-2"
+              onCheckedChange={(checked) => setIsUrgent(!!checked)}
             />
-            <span className="text-sm text-neutral-700">
+            <Label htmlFor="urgent" className="text-sm text-neutral-700">
               Mensagem urgente
               <span className="text-red-600 font-medium ml-1">
                 (+R$ {(cost - 0.25).toFixed(2)})
               </span>
-            </span>
-          </label>
+            </Label>
+          </div>
+
           <div className="text-xs text-neutral-500">
             Custo: R$ {cost.toFixed(2)}
           </div>
         </div>
 
         <div className="flex items-center gap-2">
-          <input
+          <Input
             type="text"
-            className="flex-1 border rounded-full px-4 py-2 text-sm bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+            className="flex-1 rounded-full px-4 py-2 text-sm"
             placeholder="Digite uma mensagem..."
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             aria-label="Digite sua mensagem"
             ref={inputRef}
           />
-          <button
+          <Button
             type="submit"
-            className="p-2 text-primary hover:bg-muted rounded-full transition-colors"
+            variant="ghost"
+            size="icon"
+            className="text-primary hover:bg-muted rounded-full transition-colors"
             disabled={!message.trim()}
             aria-label="Enviar mensagem"
           >
             <Send className="h-5 w-5" />
-          </button>
+          </Button>
         </div>
       </form>
     </div>

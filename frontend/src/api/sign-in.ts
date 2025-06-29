@@ -34,6 +34,6 @@ export async function signIn(data: AuthRequest) {
   });
 
   localStorage.setItem("clientDocumentId", cleanedDoc);
-  console.log("Client document ID stored in localStorage:", cleanedDoc);
+  localStorage.setItem("token", response.data.token);
   return response.data;
 }

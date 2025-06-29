@@ -28,16 +28,17 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/**",
                                 "/authenticate",
-                                "/authenticate/sign-out", // Libera o endpoint de sign-out
-                                "/conversations/**",
-                                "/messages/**",
+                                "/authenticate/sign-out",
                                 "/clients/**",
                                 "/actuator/**",
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**"
                         ).permitAll()
+                        .requestMatchers(
+                                "/conversations/**",
+                                "/messages/**"
+                        ).authenticated()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(authService), UsernamePasswordAuthenticationFilter.class);
