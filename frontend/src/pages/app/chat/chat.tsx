@@ -62,6 +62,7 @@ export function Chat() {
     queryKey: ["conversation", id],
     queryFn: async () => {
       const response = await api.get(`/conversations/${id}`);
+      console.log("Conversation data:", response.data);
       return response.data;
     },
     enabled: !!id,

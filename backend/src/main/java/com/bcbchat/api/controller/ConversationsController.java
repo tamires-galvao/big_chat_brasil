@@ -36,8 +36,16 @@ public class ConversationsController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Conversation> getConversationById(@PathVariable String id) {
-        var response = conversationService.getById(id);
-        return ResponseEntity.ok(response);
+        String clientId = SecurityContextHolder.getContext().getAuthentication().getName();
+        System.out.println("getConversationById ClientId: " + clientId);
+        Conversation conversation = conversationService.getById(id);
+
+        // Verifica se a conversa pertence ao cliente logado
+        if (!conversation.getClientId().equals(clientId)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        return ResponseEntity.ok(conversation);
     }
 
     @GetMapping("/{id}/messages")

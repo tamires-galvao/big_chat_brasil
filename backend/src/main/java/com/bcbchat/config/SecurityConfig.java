@@ -33,7 +33,8 @@ public class SecurityConfig {
                                 "/clients/**",
                                 "/actuator/**",
                                 "/swagger-ui/**",
-                                "/v3/api-docs/**"
+                                "/v3/api-docs/**",
+                                "/ws/**"
                         ).permitAll()
                         .requestMatchers(
                                 "/conversations/**",
