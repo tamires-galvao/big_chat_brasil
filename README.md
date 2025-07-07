@@ -66,9 +66,10 @@ docker ps
 | Serviço                | URL                                                                                        |
 | ---------------------- | ------------------------------------------------------------------------------------------ |
 | **Frontend**           | [http://localhost:3000](http://localhost:3000/auth/sign-in)                                |
-| **Swagger (API Docs)** | [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html) |
 ## Cliente (CPF) 
 - 12345678901
+## Cliente (CNPJ) 
+- 12345678901234
 
 ---
 
